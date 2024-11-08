@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genesis bountycreator Control Panel - DeGIG</title>
+    <link rel="stylesheet" href="css/core/variables.css">
+    <link rel="stylesheet" href="css/core/base.css">
+    <link rel="stylesheet" href="css/layouts/container.css">
+    <link rel="stylesheet" href="css/components/navigation.css">
+    <link rel="stylesheet" href="css/components/button.css">
+    <link rel="stylesheet" href="css/components/message.css">
+    <link rel="stylesheet" href="css/components/profile.css">
+    <link rel="stylesheet" href="css/components/bountycreator-control-panel.css">
+    <link rel="stylesheet" href="css/themes/dark.css">
+    <link rel="stylesheet" href="css/themes/print.css">
+    <style>
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: var(--color-background-alt);
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+        }
+
+        .sidebar--open {
+            width: 250px !important;
+        }
+
+        .sidebar__close {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            color: var(--color-text);
+            text-decoration: none;
+        }
+
+        .sidebar__brand {
+            padding: 8px 16px 16px;
+            font-size: 1.2em;
+            color: var(--color-text);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .sidebar__link {
+            padding: 8px 16px;
+            text-decoration: none;
+            font-size: 1em;
+            color: var(--color-text);
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar__link:hover {
+            background-color: var(--color-background-hover);
+        }
+
+        .sidebar__footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid var(--color-border);
+            padding: 16px 0;
+        }
+    </style>
+    <script>
+        // Initialize session for testing
+        sessionStorage.setItem('isAuthenticated', 'true');
+        sessionStorage.setItem('userRole', 'genesis');
+        sessionStorage.setItem('userName', 'genesis');
+    </script>
+</head>
+<body class="page">
+    <nav class="nav">
+        <div class="nav__container">
+            <button id="hamburger" class="nav__toggle">&#9776;</button>
+            <span class="nav__brand">DeGIG</span>
+            <div class="nav__menu">
+                <span class="nav__link user-name" id="userName"></span>
+            </div>
+        </div>
+        <div id="navMenu" class="nav__dropdown" hidden>
+            <button class="nav__dropdown-item" id="logoutBtn">Logout</button>
+            <button class="nav__dropdown-item" id="exitBtn">Exit</button>
+        </div>
+    </nav>
+
+    <div id="sidebar" class="sidebar">
+        <a href="javascript:void(0)" class="sidebar__close" id="close-sidebar">&times;</a>
+        <div class="sidebar__brand">DeGIG</div>
+        <div id="menu-items">
+            <!-- Menu items will be populated based on user role -->
+        </div>
+    </div>
+
+    <div class="page__container">
+        <div class="content-area l-container">
+            <div class="bountycreator-control-panel">
+                <h1 class="page-title">Genesis bountycreator Control Panel</h1>
+                
+                <div class="section">
+                    <h2 class="section-title">Create New bountycreator User</h2>
+                    <p class="form-description">
+                        Use this form to create new Platform bountycreators or User bountycreators. 
+                        Each bountycreator will need to change their password upon first login.
+                    </p>
+                    
+                    <form id="bountycreator-creation-form" class="user-form" method="post" onsubmit="return false;">
+                        <div class="form-group">
+                            <label for="username" class="required-field">Username</label>
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                autocomplete="username" 
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="required-field">Email</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                autocomplete="email" 
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="required-field">Initial Password</label>
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                autocomplete="new-password" 
+                                required
+                            >
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="role" class="required-field">bountycreator Type</label>
+                            <select id="role" name="role" required>
+                                <option value="">Select bountycreator type</option>
+                                <option value="user" selected>User bountycreator</option>
+                                <option value="platform">Platform bountycreator</option>
+                            </select>
+                        </div>
+                        
+                        <button type="submit" id="submitBtn" class="button button--primary">Create bountycreator User</button>
+                    </form>
+                </div>
+
+                <div class="section">
+                    <h2 class="section-title">Existing bountycreator Users</h2>
+                    <div id="bountycreator-list-container">
+                        <!-- bountycreator list will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load scripts -->
+    <script src="js/dataservice.js"></script>
+    <script src="js/modules/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set username from session
+            const userName = sessionStorage.getItem('userName');
+            if (userName) {
+                document.getElementById('userName').textContent = userName;
+            }
+
+            // Setup hamburger menu
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+            
+            hamburger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = navMenu.hasAttribute('hidden');
+                if (isHidden) {
+                    navMenu.removeAttribute('hidden');
+                } else {
+                    navMenu.setAttribute('hidden', '');
+                }
+                navigation.toggleNav();
+            });
+
+            // Setup logout and exit buttons
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                navigation.logout();
+            });
+
+            document.getElementById('exitBtn').addEventListener('click', () => {
+                navigation.exitApplication();
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav__dropdown') && !e.target.closest('.nav__toggle')) {
+                    navMenu.setAttribute('hidden', '');
+                }
+            });
+
+            // Initialize sidebar menu based on user role
+            const userRole = sessionStorage.getItem('userRole');
+            const menuItems = document.getElementById('menu-items');
+            
+            if (userRole === 'genesis') {
+                menuItems.innerHTML = `
+                    <a href="bountycreatorControlPanel.html" class="sidebar__link">bountycreator Control Panel</a>
+                    <a href="userProfile.html" class="sidebar__link">My Profile</a>
+                    <a href="settings.html" class="sidebar__link">Settings</a>
+                `;
+            }
+
+            // Setup sidebar close button
+            const closeBtn = document.getElementById('close-sidebar');
+            closeBtn.addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.style.width = '0';
+                sidebar.classList.remove('sidebar--open');
+            });
+
+            // Close sidebar when clicking outside
+            document.addEventListener('click', (event) => {
+                const sidebar = document.getElementById('sidebar');
+                if (!event.target.closest('#sidebar') && 
+                    !event.target.closest('#hamburger') && 
+                    sidebar.classList.contains('sidebar--open')) {
+                    sidebar.style.width = '0';
+                    sidebar.classList.remove('sidebar--open');
+                }
+            });
+
+            // Close sidebar when pressing Escape
+            document.addEventListener('keydown', (e) => {
+                const sidebar = document.getElementById('sidebar');
+                if (e.key === 'Escape' && sidebar.classList.contains('sidebar--open')) {
+                    sidebar.style.width = '0';
+                    sidebar.classList.remove('sidebar--open');
+                }
+            });
+        });
+    </script>
+    <script src="js/bountycreatorcontrolpanel.js"></script>
+</body>
+</html>

@@ -1,56 +1,56 @@
-// FlexNetGX/gx-web/src/components/dashboard/volunteer.rs
+// FlexNetGX/gx-web/src/components/dashboard/bountyhunter.rs
 use yew::prelude::*;
 use crate::components::gx-mobile::{Card, Tabs, Button, Modal};
-use crate::components::survey::SurveyResponse;
-use crate::services::volunteer::VolunteerService;
-use crate::types::{Survey, VolunteerActivity, Badge, Task};
+use crate::components::bounty::bountyResponse;
+use crate::services::bountyhunter::bountyhunterService;
+use crate::types::{bounty, bountyhunterActivity, Badge, Task};
 
-pub struct VolunteerDashboard {
+pub struct bountyhunterDashboard {
     link: ComponentLink<Self>,
-    service: VolunteerService,
-    available_surveys: Vec<Survey>,
-    completed_surveys: Vec<Survey>,
-    current_activity: Option<VolunteerActivity>,
+    service: bountyhunterService,
+    available_bounties: Vec<bounty>,
+    completed_bounties: Vec<bounty>,
+    current_activity: Option<bountyhunterActivity>,
     earned_badges: Vec<Badge>,
     assigned_tasks: Vec<Task>,
     loading: bool,
-    active_survey: Option<Survey>,
-    show_survey_modal: bool,
+    active_bounty: Option<bounty>,
+    show_bounty_modal: bool,
     error: Option<String>,
 }
 
 pub enum Msg {
     FetchData,
     DataReceived {
-        surveys: Vec<Survey>,
-        completed: Vec<Survey>,
+        bounties: Vec<bounty>,
+        completed: Vec<bounty>,
         badges: Vec<Badge>,
         tasks: Vec<Task>,
     },
-    StartSurvey(Survey),
-    SubmitSurvey(Survey, Vec<String>),
+    Startbounty(bounty),
+    Submitbounty(bounty, Vec<String>),
     CompleteTask(String),
     CloseModal,
-    UpdateActivity(VolunteerActivity),
+    UpdateActivity(bountyhunterActivity),
     Error(String),
 }
 
-impl Component for VolunteerDashboard {
+impl Component for bountyhunterDashboard {
     type Message = Msg;
     type Properties = ();
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         let mut dashboard = Self {
             link,
-            service: VolunteerService::new(),
-            available_surveys: vec![],
-            completed_surveys: vec![],
+            service: bountyhunterService::new(),
+            available_bounties: vec![],
+            completed_bounties: vec![],
             current_activity: None,
             earned_badges: vec![],
             assigned_tasks: vec![],
             loading: true,
-            active_survey: None,
-            show_survey_modal: false,
+            active_bounty: None,
+            show_bounty_modal: false,
             error: None,
         };
         
@@ -64,10 +64,10 @@ impl Component for VolunteerDashboard {
                 self.loading = true;
                 let link = self.link.clone();
                 wasm_bindgen_futures::spawn_local(async move {
-                    match VolunteerService::fetch_volunteer_data().await {
+                    match bountyhunterService::fetch_bountyhunter_data().await {
                         Ok(data) => link.send_message(Msg::DataReceived {
-                            surveys: data.available_surveys,
-                            completed: data.completed_surveys,
+                            bounties: data.available_bounties,
+                            completed: data.completed_bounties,
                             badges: data.earned_badges,
                             tasks: data.assigned_tasks,
                         }),
@@ -76,28 +76,28 @@ impl Component for VolunteerDashboard {
                 });
                 false
             }
-            Msg::DataReceived { surveys, completed, badges, tasks } => {
-                self.available_surveys = surveys;
-                self.completed_surveys = completed;
+            Msg::DataReceived { bounties, completed, badges, tasks } => {
+                self.available_bounties = bounties;
+                self.completed_bounties = completed;
                 self.earned_badges = badges;
                 self.assigned_tasks = tasks;
                 self.loading = false;
                 true
             }
-            Msg::StartSurvey(survey) => {
-                self.active_survey = Some(survey);
-                self.show_survey_modal = true;
+            Msg::Startbounty(bounty) => {
+                self.active_bounty = Some(bounty);
+                self.show_bounty_modal = true;
                 true
             }
-            Msg::SubmitSurvey(survey, responses) => {
+            Msg::Submitbounty(bounty, responses) => {
                 let link = self.link.clone();
                 wasm_bindgen_futures::spawn_local(async move {
-                    match VolunteerService::submit_survey_response(survey.id, responses).await {
+                    match bountyhunterService::submit_bounty_response(bounty.id, responses).await {
                         Ok(_) => link.send_message(Msg::FetchData),
                         Err(e) => link.send_message(Msg::Error(e.to_string())),
                     }
                 });
-                self.show_survey_modal = false;
+                self.show_bounty_modal = false;
                 true
             }
             // Handle other messages...
@@ -114,8 +114,8 @@ impl Component for VolunteerDashboard {
                         <div label="Dashboard">
                             { self.view_dashboard_content() }
                         </div>
-                        <div label="Surveys">
-                            { self.view_surveys() }
+                        <div label="bounties">
+                            { self.view_bounties() }
                         </div>
                         <div label="Tasks">
                             { self.view_tasks() }
@@ -125,19 +125,19 @@ impl Component for VolunteerDashboard {
                         </div>
                     </Tabs>
                 </div>
-                { self.view_survey_modal() }
+                { self.view_bounty_modal() }
             </div>
         }
     }
 }
 
-impl VolunteerDashboard {
+impl bountyhunterDashboard {
     fn view_header(&self) -> Html {
         html! {
             <header class="bg-white shadow-sm p-4">
                 <div class="flex justify-between items-center">
                     <h1 class="text-2xl font-bold text-gray-800">
-                        {"Volunteer Dashboard"}
+                        {"bountyhunter Dashboard"}
                     </h1>
                     { self.view_activity_status() }
                 </div>
@@ -161,20 +161,20 @@ impl VolunteerDashboard {
                 <Card>
                     <div class="p-4">
                         <h3 class="text-lg font-semibold text-gray-600">
-                            {"Surveys Completed"}
+                            {"bounties Completed"}
                         </h3>
                         <p class="text-3xl font-bold">
-                            { self.completed_surveys.len() }
+                            { self.completed_bounties.len() }
                         </p>
                     </div>
                 </Card>
                 <Card>
                     <div class="p-4">
                         <h3 class="text-lg font-semibold text-gray-600">
-                            {"Available Surveys"}
+                            {"Available bounties"}
                         </h3>
                         <p class="text-3xl font-bold">
-                            { self.available_surveys.len() }
+                            { self.available_bounties.len() }
                         </p>
                     </div>
                 </Card>
@@ -202,18 +202,18 @@ impl VolunteerDashboard {
         }
     }
 
-    fn view_survey_modal(&self) -> Html {
-        if let Some(survey) = &self.active_survey {
+    fn view_bounty_modal(&self) -> Html {
+        if let Some(bounty) = &self.active_bounty {
             html! {
                 <Modal
-                    show=self.show_survey_modal
+                    show=self.show_bounty_modal
                     onclose=self.link.callback(|_| Msg::CloseModal)
-                    title=survey.title.clone()
+                    title=bounty.title.clone()
                 >
-                    <SurveyResponse
-                        survey=survey.clone()
+                    <bountyResponse
+                        bounty=bounty.clone()
                         onsubmit=self.link.callback(move |responses| 
-                            Msg::SubmitSurvey(survey.clone(), responses)
+                            Msg::Submitbounty(bounty.clone(), responses)
                         )
                     />
                 </Modal>

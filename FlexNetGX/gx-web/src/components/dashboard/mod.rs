@@ -3,9 +3,9 @@ use yew::prelude::*;
 use crate::types::{User, UserRole};
 use crate::services::auth::AuthContext;
 
-pub mod admin;
-pub mod research;
-pub mod volunteer;
+pub mod bountycreator;
+pub mod moderate;
+pub mod bountyhunter;
 pub mod common;
 
 #[derive(Properties, Clone, PartialEq)]
@@ -60,14 +60,14 @@ impl Component for Dashboard {
 impl Dashboard {
     fn view_dashboard_content(&self) -> Html {
         match self.props.user.role {
-            UserRole::Admin => html! {
-                <admin::AdminDashboard user=self.props.user.clone() />
+            UserRole::bountycreator => html! {
+                <bountycreator::bountycreatorDashboard user=self.props.user.clone() />
             },
-            UserRole::Research => html! {
-                <research::ResearchDashboard user=self.props.user.clone() />
+            UserRole::moderate => html! {
+                <moderate::moderateDashboard user=self.props.user.clone() />
             },
-            UserRole::Volunteer => html! {
-                <volunteer::VolunteerDashboard user=self.props.user.clone() />
+            UserRole::bountyhunter => html! {
+                <bountyhunter::bountyhunterDashboard user=self.props.user.clone() />
             },
         }
     }

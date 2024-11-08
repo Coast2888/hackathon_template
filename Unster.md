@@ -4,7 +4,7 @@
 
 Unster is an innovative open-source decentralized undatabase project designed to revolutionize data management and empower the user economy. It combines high-speed transactions, large-scale data management, and a robust token economy to create a decentralized, permissionless, and composable ecosystem for users.
 
-The foundation of Unster lies in the groundbreaking research conducted by Dr. Robert Whetsel, beginning in 1998, which resulted in the awarded patent US9069626. Building upon this foundation, work on Unster commenced in the 4th quarter of 2024, led by a diverse team of experts in:
+The foundation of Unster lies in the groundbreaking moderate conducted by Dr. Robert Whetsel, beginning in 1998, which resulted in the awarded patent US9069626. Building upon this foundation, work on Unster commenced in the 4th quarter of 2024, led by a diverse team of experts in:
 
 - Distributed database systems
 - Blockchain technology
@@ -121,7 +121,7 @@ Unster incorporates the MMOSH token economy to create a decentralized, permissio
 
 - On-chain incentives for creating, promoting, and joining projects and their communities
 - Dynamic distribution of resources and value based on the context of each transaction
-- Support for various participant roles: Admins, Users, Obserers, and Agents
+- Support for various participant roles: bountycreators, Users, Obserers, and Agents
 - Implementation of token gx-blockchain such as Profiles, Badges, Passes, and Coins
 
 #### Token gx-blockchain
@@ -156,11 +156,11 @@ The MMOSH token serves multiple purposes within the Unster ecosystem:
 5. User rewards: users earn MMOSH tokens for their contributions to the ecosystem
 
 
-### Participant Roles (Admins, Users, Obserers, and Agents)
+### Participant Roles (bountycreators, Users, Obserers, and Agents)
 
 The Unster ecosystem supports various roles that participants can assume:
 
-1. Admins: organizations, programs, platforms, networks, protocols, projects, ecosystems, and domains can establish their unster context, rules, logic, and economics through no or low-code wizards or APIs.
+1. bountycreators: organizations, programs, platforms, networks, protocols, projects, ecosystems, and domains can establish their unster context, rules, logic, and economics through no or low-code wizards or APIs.
 
 2. Users: product owners, program mangers, project managers, developers, designers, coaches, and consultants can include and adapt multiple forms of media such as text, images, music, and video, assisted by generative AI.
 
@@ -186,7 +186,7 @@ Unster's unique combination of decentralized database technology, blockchain sec
 
 6. Content Distribution: Decentralized content storage with fine-grained access control
 
-7. Scientific Research: Secure collaboration and data sharing across institutions
+7. Scientific moderate: Secure collaboration and data sharing across institutions
 
 8. Government Services: Transparent and auditable public records management
 

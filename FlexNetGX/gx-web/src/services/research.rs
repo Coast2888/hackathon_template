@@ -1,34 +1,34 @@
-// FlexNetGX/gx-web/src/services/research.rs
+// FlexNetGX/gx-web/src/services/moderate.rs
 use wasm_bindgen::JsValue;
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode, Response};
-use crate::types::{ResearchData, Survey, Analysis, SurveyResponse};
+use crate::types::{moderateData, bounty, Analysis, bountyResponse};
 use crate::config::API_BASE_URL;
 
-pub struct ResearchService {
+pub struct moderateService {
     base_url: String,
 }
 
-impl ResearchService {
+impl moderateService {
     pub fn new() -> Self {
         Self {
-            base_url: format!("{}/research", API_BASE_URL),
+            base_url: format!("{}/moderate", API_BASE_URL),
         }
     }
 
-    pub async fn fetch_research_data(&self) -> Result<ResearchData, String> {
+    pub async fn fetch_moderate_data(&self) -> Result<moderateData, String> {
         let request = self.create_request("GET", "data", None)?;
-        let data = self.send_request::<ResearchData>(request).await?;
+        let data = self.send_request::<moderateData>(request).await?;
         Ok(data)
     }
 
-    pub async fn create_survey(&self, survey: Survey) -> Result<Survey, String> {
-        let body = serde_json::to_string(&survey)
+    pub async fn create_bounty(&self, bounty: bounty) -> Result<bounty, String> {
+        let body = serde_json::to_string(&bounty)
             .map_err(|e| e.to_string())?;
         
-        let request = self.create_request("POST", "surveys", Some(&body))?;
-        let created_survey = self.send_request::<Survey>(request).await?;
-        Ok(created_survey)
+        let request = self.create_request("POST", "bounties", Some(&body))?;
+        let created_bounty = self.send_request::<bounty>(request).await?;
+        Ok(created_bounty)
     }
 
     pub async fn update_analysis(&self, analysis: Analysis) -> Result<Analysis, String> {

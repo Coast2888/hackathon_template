@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bountycreator Dashboard - DeGIG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .iframe-container {
+            width: 100%;
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+        
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .content-area {
+            transition: margin-left var(--transition-speed);
+            padding: var(--spacing-md);
+        }
+
+        .sidebar--open + .content-area {
+            margin-left: 250px;
+        }
+    </style>
+</head>
+<body class="page">
+    <div class="page__container">
+        <div id="nav-component"></div>
+        <div id="sidebar-component"></div>
+        
+        <div class="content-area">
+            <div class="iframe-container">
+                <iframe id="content-frame" src="spreadsheet.html" sandbox="allow-scripts allow-same-origin"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import ComponentLoader from './js/modules/componentLoader.js';
+        
+        // Set user role for proper sidebar menu
+        localStorage.setItem('userRole', 'platformbountycreator');
+        localStorage.setItem('userName', 'bountycreator');
+
+        // Load components
+        async function initializeDashboard() {
+            await ComponentLoader.insertComponent('#nav-component', 'components/nav.html', {
+                userName: localStorage.getItem('userName') || 'bountycreator'
+            });
+
+            await ComponentLoader.insertComponent('#sidebar-component', 'components/sidebar.html');
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    </script>
+    <script src="js/bountycreatordashboard.js"></script>
+</body>
+</html>

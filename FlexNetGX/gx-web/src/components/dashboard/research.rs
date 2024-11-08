@@ -1,15 +1,15 @@
-// FlexNetGX/gx-web/src/components/dashboard/research.rs
+// FlexNetGX/gx-web/src/components/dashboard/moderate.rs
 use yew::prelude::*;
 use crate::components::gx-mobile::{Card, DataGrid, Chart, Tabs, Button};
-use crate::components::research::{SurveyManager, DataVisualization, TeamCollaboration};
-use crate::services::research::ResearchService;
-use crate::types::{ResearchData, Survey, Analysis, TeamMember};
+use crate::components::moderate::{bountyManager, DataVisualization, TeamCollaboration};
+use crate::services::moderate::moderateService;
+use crate::types::{moderateData, bounty, Analysis, TeamMember};
 
-pub struct ResearchDashboard {
+pub struct moderateDashboard {
     link: ComponentLink<Self>,
-    research_service: ResearchService,
-    current_data: Option<ResearchData>,
-    active_surveys: Vec<Survey>,
+    moderate_service: moderateService,
+    current_data: Option<moderateData>,
+    active_bounties: Vec<bounty>,
     team_members: Vec<TeamMember>,
     analyses: Vec<Analysis>,
     loading: bool,
@@ -18,8 +18,8 @@ pub struct ResearchDashboard {
 
 pub enum Msg {
     FetchData,
-    DataReceived(ResearchData),
-    CreateSurvey(Survey),
+    DataReceived(moderateData),
+    Createbounty(bounty),
     UpdateAnalysis(Analysis),
     ExportData(String),
     ShareAnalysis(Analysis, Vec<String>),
@@ -27,16 +27,16 @@ pub enum Msg {
     ClearError,
 }
 
-impl Component for ResearchDashboard {
+impl Component for moderateDashboard {
     type Message = Msg;
     type Properties = ();
 
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
         let mut dashboard = Self {
             link,
-            research_service: ResearchService::new(),
+            moderate_service: moderateService::new(),
             current_data: None,
-            active_surveys: vec![],
+            active_bounties: vec![],
             team_members: vec![],
             analyses: vec![],
             loading: true,
@@ -53,7 +53,7 @@ impl Component for ResearchDashboard {
                 self.loading = true;
                 let link = self.link.clone();
                 wasm_bindgen_futures::spawn_local(async move {
-                    match ResearchService::fetch_research_data().await {
+                    match moderateService::fetch_moderate_data().await {
                         Ok(data) => link.send_message(Msg::DataReceived(data)),
                         Err(e) => link.send_message(Msg::Error(e.to_string())),
                     }
@@ -65,10 +65,10 @@ impl Component for ResearchDashboard {
                 self.loading = false;
                 true
             }
-            Msg::CreateSurvey(survey) => {
+            Msg::Createbounty(bounty) => {
                 let link = self.link.clone();
                 wasm_bindgen_futures::spawn_local(async move {
-                    match ResearchService::create_survey(survey).await {
+                    match moderateService::create_bounty(bounty).await {
                         Ok(_) => link.send_message(Msg::FetchData),
                         Err(e) => link.send_message(Msg::Error(e.to_string())),
                     }
@@ -89,8 +89,8 @@ impl Component for ResearchDashboard {
                         <div label="Dashboard">
                             { self.view_dashboard_content() }
                         </div>
-                        <div label="Surveys">
-                            { self.view_surveys() }
+                        <div label="bounties">
+                            { self.view_bounties() }
                         </div>
                         <div label="Analysis">
                             { self.view_analysis() }
@@ -105,18 +105,18 @@ impl Component for ResearchDashboard {
     }
 }
 
-impl ResearchDashboard {
+impl moderateDashboard {
     fn view_header(&self) -> Html {
         html! {
             <header class="bg-white shadow-md p-4">
                 <div class="flex justify-between items-center">
-                    <h1 class="text-2xl font-bold text-gray-800">{"Research Dashboard"}</h1>
+                    <h1 class="text-2xl font-bold text-gray-800">{"moderate Dashboard"}</h1>
                     <div class="flex space-x-4">
                         <Button
                             variant="primary"
-                            onclick=self.link.callback(|_| Msg::CreateSurvey(Survey::default()))
+                            onclick=self.link.callback(|_| Msg::Createbounty(bounty::default()))
                         >
-                            {"New Survey"}
+                            {"New bounty"}
                         </Button>
                         <Button
                             variant="secondary"
@@ -146,8 +146,8 @@ impl ResearchDashboard {
                 <div class="col-span-12 grid grid-cols-4 gap-4">
                     <Card>
                         <div class="p-4">
-                            <h3 class="text-lg font-semibold text-gray-600">{"Active Surveys"}</h3>
-                            <p class="text-3xl font-bold">{ data.active_surveys_count }</p>
+                            <h3 class="text-lg font-semibold text-gray-600">{"Active bounties"}</h3>
+                            <p class="text-3xl font-bold">{ data.active_bounties_count }</p>
                         </div>
                     </Card>
                     <Card>
@@ -197,20 +197,20 @@ impl ResearchDashboard {
         }
     }
 
-    fn view_surveys(&self) -> Html {
+    fn view_bounties(&self) -> Html {
         html! {
             <div class="space-y-6">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-xl font-bold">{"Active Surveys"}</h2>
+                    <h2 class="text-xl font-bold">{"Active bounties"}</h2>
                     <Button
                         variant="primary"
-                        onclick=self.link.callback(|_| Msg::CreateSurvey(Survey::default()))
+                        onclick=self.link.callback(|_| Msg::Createbounty(bounty::default()))
                     >
-                        {"Create New Survey"}
+                        {"Create New bounty"}
                     </Button>
                 </div>
-                <SurveyManager
-                    surveys=self.active_surveys.clone()
+                <bountyManager
+                    bounties=self.active_bounties.clone()
                     onupdate=self.link.callback(|_| Msg::FetchData)
                 />
             </div>
