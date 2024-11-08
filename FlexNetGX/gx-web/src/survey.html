@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bounties - DeGIG</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .bounty-container {
+            padding: var(--spacing-md);
+        }
+
+        .bounty-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .bounty-filters {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .bounty-filters select {
+            padding: var(--spacing-sm);
+            border: var(--border-width) solid var(--color-border-default);
+            border-radius: var(--border-radius);
+            background: var(--color-surface-primary);
+        }
+
+        .bounty-list {
+            display: grid;
+            gap: var(--spacing-md);
+        }
+
+        .bounty-card {
+            background: var(--color-surface-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            padding: var(--spacing-md);
+            display: grid;
+            gap: var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bounty-status {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 3rem 3rem 0;
+            border-color: transparent var(--color-brand-primary) transparent transparent;
+        }
+
+        .bounty-card.completed .bounty-status {
+            border-color: transparent var(--color-success) transparent transparent;
+        }
+
+        .bounty-content {
+            display: grid;
+            gap: var(--spacing-sm);
+        }
+
+        .bounty-title {
+            margin: 0;
+            color: var(--color-text-primary);
+            font-size: 1.25rem;
+        }
+
+        .bounty-description {
+            color: var(--color-text-secondary);
+            margin: 0;
+        }
+
+        .bounty-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            color: var(--color-text-tertiary);
+            font-size: 0.875rem;
+        }
+
+        .bounty-actions {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .bounty-actions button {
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+        }
+
+        .start-bounty {
+            background: var(--color-brand-primary);
+            color: var(--color-text-on-brand);
+        }
+
+        .start-bounty:hover {
+            background: var(--color-brand-primary-hover);
+        }
+
+        .view-results {
+            background: var(--color-brand-secondary);
+            color: var(--color-text-on-brand);
+        }
+
+        .view-results:hover {
+            background: var(--color-brand-secondary-hover);
+        }
+
+        .no-bounties {
+            text-align: center;
+            padding: var(--spacing-xl);
+            color: var(--color-text-secondary);
+            background: var(--color-surface-primary);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+        }
+
+        .no-bounties p {
+            margin-top: var(--spacing-md);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .content-area {
+            transition: margin-left var(--transition-speed);
+            padding: var(--spacing-md);
+        }
+
+        .sidebar--open + .content-area {
+            margin-left: 250px;
+        }
+    </style>
+</head>
+<body class="page">
+    <div class="page__container">
+        <div id="nav-component"></div>
+        <div id="sidebar-component"></div>
+
+        <div class="content-area">
+            <div class="bounty-container">
+                <header class="bounty-header">
+                    <h1>Available bounties</h1>
+                    <div class="bounty-filters">
+                        <select id="bountyFilter" aria-label="Filter bounties">
+                            <option value="all">All bounties</option>
+                            <option value="pending">Pending</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                        <button id="refreshbounties" class="btn" aria-label="Refresh bounties">
+                            ↻ Refresh
+                        </button>
+                    </div>
+                </header>
+
+                <main class="bounty-list" id="bountyList">
+                    <!-- bounties will be dynamically populated -->
+                </main>
+
+                <template id="bountyTemplate">
+                    <article class="bounty-card">
+                        <div class="bounty-status"></div>
+                        <div class="bounty-content">
+                            <h2 class="bounty-title"></h2>
+                            <p class="bounty-description"></p>
+                            <div class="bounty-meta">
+                                <span class="deadline"></span>
+                                <span class="estimated-time"></span>
+                            </div>
+                        </div>
+                        <div class="bounty-actions">
+                            <button class="start-bounty">Start bounty</button>
+                            <button class="view-results hidden">View Results</button>
+                        </div>
+                    </article>
+                </template>
+
+                <div id="nobounties" class="no-bounties hidden">
+                    <p>No bounties available at this time</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import ComponentLoader from './js/modules/componentLoader.js';
+
+        // Load components
+        async function initializebounty() {
+            await ComponentLoader.insertComponent('#nav-component', 'components/nav.html', {
+                userName: localStorage.getItem('userName') || 'User'
+            });
+
+            await ComponentLoader.insertComponent('#sidebar-component', 'components/sidebar.html');
+        }
+
+        // Initialize the bounty page
+        document.addEventListener('DOMContentLoaded', initializebounty);
+    </script>
+    <script src="js/bounty.js"></script>
+</body>
+</html>

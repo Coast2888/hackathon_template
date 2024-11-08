@@ -1,61 +1,61 @@
-// FlexNetGX/gx-web/src/state/surveys.rs
+// FlexNetGX/gx-web/src/state/bounties.rs
 use serde::{Serialize, Deserialize};
 use chrono::{DateTime, Utc};
 use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
-pub struct SurveyState {
-    pub items: Vec<Survey>,
-    pub responses: HashMap<String, Vec<SurveyResponse>>,
-    pub active_survey_id: Option<String>,
-    pub filters: SurveyFilters,
-    pub statistics: SurveyStatistics,
+pub struct bountiestate {
+    pub items: Vec<bounty>,
+    pub responses: HashMap<String, Vec<bountyResponse>>,
+    pub active_bounty_id: Option<String>,
+    pub filters: bountyFilters,
+    pub statistics: bountiestatistics,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct SurveyFilters {
-    pub status: Option<SurveyStatus>,
+pub struct bountyFilters {
+    pub status: Option<bountiestatus>,
     pub date_range: Option<(DateTime<Utc>, DateTime<Utc>)>,
     pub tag: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct SurveyStatistics {
+pub struct bountiestatistics {
     pub total_responses: usize,
     pub average_completion_time: f64,
     pub response_rate: f64,
     pub completion_rate: f64,
 }
 
-pub enum SurveyAction {
-    SetFilter(SurveyFilters),
-    UpdateStatistics(SurveyStatistics),
-    SetActiveSurvey(Option<String>),
-    AddResponse(String, SurveyResponse),
+pub enum bountyAction {
+    SetFilter(bountyFilters),
+    UpdateStatistics(bountiestatistics),
+    SetActivebounty(Option<String>),
+    AddResponse(String, bountyResponse),
     ClearResponses(String),
 }
 
-impl SurveyState {
-    pub fn apply_action(&mut self, action: SurveyAction) {
+impl bountiestate {
+    pub fn apply_action(&mut self, action: bountyAction) {
         match action {
-            SurveyAction::SetFilter(filters) => {
+            bountyAction::SetFilter(filters) => {
                 self.filters = filters;
             }
-            SurveyAction::UpdateStatistics(stats) => {
+            bountyAction::UpdateStatistics(stats) => {
                 self.statistics = stats;
             }
-            SurveyAction::SetActiveSurvey(id) => {
-                self.active_survey_id = id;
+            bountyAction::SetActivebounty(id) => {
+                self.active_bounty_id = id;
             }
-            SurveyAction::AddResponse(survey_id, response) => {
+            bountyAction::AddResponse(bounty_id, response) => {
                 self.responses
-                    .entry(survey_id)
+                    .entry(bounty_id)
                     .or_insert_with(Vec::new)
                     .push(response);
                 self.update_statistics();
             }
-            SurveyAction::ClearResponses(survey_id) => {
-                self.responses.remove(&survey_id);
+            bountyAction::ClearResponses(bounty_id) => {
+                self.responses.remove(&bounty_id);
                 self.update_statistics();
             }
         }
@@ -63,9 +63,9 @@ impl SurveyState {
 
     fn update_statistics(&mut self) {
         let total_responses: usize = self.responses.values().map(|r| r.len()).sum();
-        let total_surveys = self.items.len();
+        let total_bounties = self.items.len();
         
-        self.statistics = SurveyStatistics {
+        self.statistics = bountiestatistics {
             total_responses,
             average_completion_time: self.calculate_average_completion_time(),
             response_rate: self.calculate_response_rate(),
