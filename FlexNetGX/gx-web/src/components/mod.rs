@@ -17,9 +17,9 @@ pub mod auth {
 
 // Dashboard components
 pub mod dashboard {
-    pub mod admin;         // Admin dashboard
-    pub mod research;      // Research dashboard
-    pub mod volunteer;     // Volunteer dashboard
+    pub mod bountycreator;         // bountycreator dashboard
+    pub mod moderate;      // moderate dashboard
+    pub mod bountyhunter;     // bountyhunter dashboard
     pub mod welcome;       // Welcome dashboard
 }
 
@@ -44,12 +44,12 @@ pub mod team {
     pub mod create;        // Create team
 }
 
-// Survey components
-pub mod survey {
-    pub mod list;          // Survey list
-    pub mod create;        // Create survey
-    pub mod respond;       // Survey response
-    pub mod results;       // Survey results
+// bounty components
+pub mod bounty {
+    pub mod list;          // bounty list
+    pub mod create;        // Create bounty
+    pub mod respond;       // bounty response
+    pub mod results;       // bounty results
 }
 
 // gx-mobile components

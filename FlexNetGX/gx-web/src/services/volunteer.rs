@@ -1,40 +1,40 @@
-// FlexNetGX/gx-web/src/services/volunteer.rs
+// FlexNetGX/gx-web/src/services/bountyhunter.rs
 use serde::{Serialize, Deserialize};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{Request, RequestInit, RequestMode};
-use crate::types::{Survey, Badge, Task, VolunteerData};
+use crate::types::{bounty, Badge, Task, bountyhunterData};
 
 #[derive(Debug, Serialize)]
-struct SurveyResponse {
-    survey_id: String,
+struct bountyResponse {
+    bounty_id: String,
     responses: Vec<String>,
     timestamp: String,
 }
 
-pub struct VolunteerService {
+pub struct bountyhunterService {
     base_url: String,
 }
 
-impl VolunteerService {
+impl bountyhunterService {
     pub fn new() -> Self {
         Self {
-            base_url: format!("{}/volunteer", API_BASE_URL),
+            base_url: format!("{}/bountyhunter", API_BASE_URL),
         }
     }
 
-    pub async fn fetch_volunteer_data(&self) -> Result<VolunteerData, String> {
+    pub async fn fetch_bountyhunter_data(&self) -> Result<bountyhunterData, String> {
         let request = self.create_request("GET", "data", None)?;
-        let data = self.send_request::<VolunteerData>(request).await?;
+        let data = self.send_request::<bountyhunterData>(request).await?;
         Ok(data)
     }
 
-    pub async fn submit_survey_response(
+    pub async fn submit_bounty_response(
         &self,
-        survey_id: String,
+        bounty_id: String,
         responses: Vec<String>
     ) -> Result<(), String> {
-        let response = SurveyResponse {
-            survey_id,
+        let response = bountyResponse {
+            bounty_id,
             responses,
             timestamp: chrono::Utc::now().to_rfc3339(),
         };
@@ -42,7 +42,7 @@ impl VolunteerService {
         let body = serde_json::to_string(&response)
             .map_err(|e| e.to_string())?;
 
-        let request = self.create_request("POST", "surveys/submit", Some(&body))?;
+        let request = self.create_request("POST", "bounties/submit", Some(&body))?;
         self.send_request::<()>(request).await
     }
 

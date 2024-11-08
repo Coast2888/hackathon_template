@@ -1,0 +1,84 @@
+<div id="sidebar" class="sidebar" style="width: 0;">
+    <a href="javascript:void(0)" class="sidebar__close" id="close-sidebar">&times;</a>
+    <div class="sidebar__brand">DeGIG</div>
+    <div id="menu-items">
+        <!-- Genesis bountycreator Menu -->
+        <template id="genesisbountycreator-menu">
+            <a href="#" class="sidebar__link" data-content="bountycreatorControlPanel.html">bountycreator Control Panel</a>
+            <a href="#" class="sidebar__link" data-content="userProfile.html">My Profile</a>
+            <a href="#" class="sidebar__link" data-content="settings.html">Settings</a>
+        </template>
+
+        <!-- Platform bountycreator Menu -->
+        <template id="platformbountycreator-menu">
+            <a href="#" class="sidebar__link" data-content="bountycreatorDashboard.html">Dashboard</a>
+            <a href="#" class="sidebar__link" data-content="userProfile.html">My Profile</a>
+            <a href="#" class="sidebar__link" data-content="settings.html">Settings</a>
+            <a href="#" class="sidebar__link" data-content="moderate.html">moderate Management</a>
+        </template>
+
+        <!-- User bountycreator Menu -->
+        <template id="userbountycreator-menu">
+            <a href="#" class="sidebar__link" data-content="bountycreatorDashboard.html">Dashboard</a>
+            <a href="#" class="sidebar__link" data-content="userProfile.html">My Profile</a>
+            <a href="#" class="sidebar__link" data-content="settings.html">Settings</a>
+            <a href="#" class="sidebar__link" data-content="bountyhunterDashboard.html">bountyhunter Management</a>
+        </template>
+
+        <!-- bountyhunter Menu -->
+        <template id="bountyhunter-menu">
+            <a href="#" class="sidebar__link" data-content="bountyhunterDashboard.html">Dashboard</a>
+            <a href="#" class="sidebar__link" data-content="availablebounties.html">Available bounties</a>
+            <a href="#" class="sidebar__link" data-content="completedbounties.html">Completed bounties</a>
+            <a href="#" class="sidebar__link" data-content="messages.html">Messages & Help</a>
+        </template>
+
+        <!-- moderate Menu -->
+        <template id="moderate-menu">
+            <a href="#" class="sidebar__link" data-content="moderateDashboard.html">Dashboard</a>
+            <a href="#" class="sidebar__link" data-content="bounty.html">bounty Management</a>
+            <a href="#" class="sidebar__link" data-content="messages.html">Messages</a>
+        </template>
+    </div>
+    
+    <!-- Common Menu Items -->
+    <div class="sidebar__footer">
+        <a href="#" class="sidebar__link logout-link">Logout</a>
+        <a href="#" class="sidebar__link exit-button">Exit</a>
+    </div>
+</div>
+
+<script type="module">
+import navigation from '../js/modules/navigation.js';
+
+// Initialize sidebar with all functionality
+navigation.initializeSidebar();
+
+// Add direct event listeners for critical functions
+const closeBtn = document.getElementById('close-sidebar');
+if (closeBtn) {
+    closeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigation.closeNav();
+    });
+}
+
+const logoutLink = document.querySelector('.logout-link');
+if (logoutLink) {
+    logoutLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigation.logout();
+    });
+}
+
+const exitButton = document.querySelector('.exit-button');
+if (exitButton) {
+    exitButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigation.exitApplication();
+    });
+}
+</script>

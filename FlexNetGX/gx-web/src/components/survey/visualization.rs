@@ -1,24 +1,24 @@
-// FlexNetGX/gx-web/src/components/survey/visualization.rs
+// FlexNetGX/gx-web/src/components/bounty/visualization.rs
 use yew::prelude::*;
 use crate::components::gx-mobile::charts::{Chart, ChartData, Dataset};
-use crate::types::{Survey, SurveyResponse, QuestionType};
+use crate::types::{bounty, bountyResponse, QuestionType};
 
 #[derive(Properties, Clone, PartialEq)]
-pub struct SurveyVisualizationProps {
-    pub survey: Survey,
-    pub responses: Vec<SurveyResponse>,
+pub struct bountyVisualizationProps {
+    pub bounty: bounty,
+    pub responses: Vec<bountyResponse>,
     #[prop_or_default]
     pub onquestionclick: Option<Callback<(usize, String)>>,
 }
 
-pub struct SurveyVisualization {
-    props: SurveyVisualizationProps,
+pub struct bountyVisualization {
+    props: bountyVisualizationProps,
     link: ComponentLink<Self>,
 }
 
-impl Component for SurveyVisualization {
+impl Component for bountyVisualization {
     type Message = (usize, String);
-    type Properties = SurveyVisualizationProps;
+    type Properties = bountyVisualizationProps;
 
     fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         Self { props, link }
@@ -28,7 +28,7 @@ impl Component for SurveyVisualization {
         html! {
             <div class="space-y-8">
                 <h2 class="text-2xl font-bold">
-                    { format!("Results: {}", self.props.survey.title) }
+                    { format!("Results: {}", self.props.bounty.title) }
                 </h2>
                 <div class="grid grid-cols-2 gap-6">
                     { self.render_response_rate() }
@@ -36,7 +36,7 @@ impl Component for SurveyVisualization {
                 </div>
                 <div class="space-y-6">
                     {
-                        for self.props.survey.questions.iter().enumerate().map(|(i, q)| {
+                        for self.props.bounty.questions.iter().enumerate().map(|(i, q)| {
                             self.render_question_results(i, q)
                         })
                     }
@@ -46,9 +46,9 @@ impl Component for SurveyVisualization {
     }
 }
 
-impl SurveyVisualization {
+impl bountyVisualization {
     fn render_response_rate(&self) -> Html {
-        let total_invites = self.props.survey.total_invites;
+        let total_invites = self.props.bounty.total_invites;
         let response_count = self.props.responses.len();
         let response_rate = (response_count as f64 / total_invites as f64) * 100.0;
 
